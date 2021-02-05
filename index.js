@@ -19,7 +19,7 @@ app.use(methodOverride('_method'));
 
 // 5 - Routes (controllers)
 app.get('/', (req, res) => {
-    res.send('Welcome to my App'); // Yo, Rome: what is this doing?
+    res.send('Welcome to my App'); 
 });
 
 app.get('/coders', (req, res)=> {
@@ -33,7 +33,38 @@ app.get('/coders', (req, res)=> {
 
 })
 
-const PORT = process.env.PORT || 6000;
+app.get('/coders/new' ,(req, res) =>{
+    console.log ('This is the new route')
+    res.render('new')
+})
+
+
+//POST route
+app.post('/coders', (req, res) =>{
+    const userInput = req.body //This is an object
+    //make sure the data types are corect before adding to database
+    let updateAge = Number(userInput.age)
+    let firstName = userInput.firstName;
+    let lastName = userInput.lastName;
+    let email = userInput.email;
+    console.log(firstName)
+    //insert into database
+    db.user.create({
+        //firstName is as firstName: firstName (when they are the exact same)
+        firstName,
+        lastName,
+        email,
+        age: updateAge
+    })
+    .then(newCoder =>{
+        //you can put only newUser, but we want the short format object
+        console.log(newCoder.get())
+        res.redirect('/coders')
+    })
+})
+
+
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server running on PORT: ${PORT}`);
 });
